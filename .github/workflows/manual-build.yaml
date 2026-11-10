@@ -1,0 +1,13 @@
+name: Manual Build
+run-name: Manual macOS build (${{ github.ref_name }}) 🍏
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-project:
+    name: Build 🧱
+    uses: ./.github/workflows/build-project.yaml
+    secrets: inherit
+    permissions:
+      contents: read

@@ -36,17 +36,13 @@ jobs:
               fi
               ;;
             push)
-              config_data=('codesign:true' 'notarize:false' 'package:true' 'config:RelWithDebInfo')
-              if [[ ${GITHUB_REF_NAME} =~ [0-9]+.[0-9]+.[0-9]+(-(rc|beta).+)? ]]; then
-                config_data[1]='notarize:true'
-                config_data[3]='config:Release'
-              fi
+              config_data=('codesign:false' 'notarize:false' 'package:true' 'config:RelWithDebInfo')
               ;;
             workflow_dispatch)
-              config_data=('codesign:true' 'notarize:false' 'package:false' 'config:RelWithDebInfo')
+              config_data=('codesign:false' 'notarize:false' 'package:true' 'config:RelWithDebInfo')
               ;;
             schedule)
-              config_data=('codesign:true' 'notarize:false' 'package:true' 'config:RelWithDebInfo')
+              config_data=('codesign:false' 'notarize:false' 'package:true' 'config:RelWithDebInfo')
               ;;
             *) ;;
           esac
@@ -73,6 +69,15 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+
+      - name: Ensure Version Tag 🏷️
+        run: |
+          : Ensure Version Tag 🏷️
+          # Fork has no upstream tags; CMake needs an X.Y.Z tag from "git describe".
+          # The tag only exists locally in this runner checkout and is not pushed.
+          if ! git describe --tags --abbrev=0 > /dev/null 2>&1; then
+            git tag 33.0.0
+          fi
 
       - name: Set Up Environment 🔧
         id: setup
